@@ -1,0 +1,31 @@
+# Output folders
+outputs_*/
+runs/
+checkpoints/
+
+# Model weights
+*.pth
+*.pt
+*.h5
+
+# Personal / presentation files
+*.pdf
+*.pptx
+Naskah_*.md
+*_train_*.md
+
+# Excluded notebooks
+topeng.ipynb
+Evaluasi_GradCAM_Analisis_Error.ipynb
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
