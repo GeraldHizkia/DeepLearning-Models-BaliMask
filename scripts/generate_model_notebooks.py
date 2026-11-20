@@ -185,7 +185,11 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
     best_val_f1 = 0.0
     best_weights = copy.deepcopy(model.state_dict())
     history = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': [], 'val_f1': []}
-    scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
+    device_type = 'cuda' if torch.cuda.is_available() else 'cpu'
+    try:
+        scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
+    except Exception:
+        scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
     
     print(f"🚀 Memulai Training {MODEL_NAME} ({num_epochs} Epochs)...")
     start_time = time.time()
@@ -201,7 +205,11 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
             images, labels = images.to(DEVICE), labels.to(DEVICE)
             optimizer.zero_grad()
             
-            with torch.cuda.amp.autocast(enabled=torch.cuda.is_available()):
+            try:
+                autocast_ctx = torch.amp.autocast(device_type=device_type, enabled=torch.cuda.is_available())
+            except Exception:
+                autocast_ctx = torch.cuda.amp.autocast(enabled=torch.cuda.is_available())
+            with autocast_ctx:
                 outputs = model(images)
                 loss = criterion(outputs, labels)
                 
@@ -225,7 +233,11 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
         with torch.no_grad():
             for images, labels, _ in val_loader:
                 images, labels = images.to(DEVICE), labels.to(DEVICE)
-                with torch.cuda.amp.autocast(enabled=torch.cuda.is_available()):
+                try:
+                autocast_ctx = torch.amp.autocast(device_type=device_type, enabled=torch.cuda.is_available())
+            except Exception:
+                autocast_ctx = torch.cuda.amp.autocast(enabled=torch.cuda.is_available())
+            with autocast_ctx:
                     outputs = model(images)
                     loss = criterion(outputs, labels)
                     
@@ -609,10 +621,9 @@ model = convnext_tiny(weights=weights)
 for param in model.features[:4].parameters():
     param.requires_grad = False
 
-# Ganti classifier head untuk 13 kelas
+# Ganti classifier head untuk 13 kelas (pertahankan LayerNorm2d dan Flatten bawaan torchvision)
 in_features = model.classifier[2].in_features
-model.classifier = nn.Sequential(
-    nn.LayerNorm(in_features, eps=1e-6),
+model.classifier[2] = nn.Sequential(
     nn.Dropout(p=0.3),
     nn.Linear(in_features, NUM_CLASSES)
 )
