@@ -186,10 +186,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
     best_weights = copy.deepcopy(model.state_dict())
     history = {'train_loss': [], 'val_loss': [], 'train_acc': [], 'val_acc': [], 'val_f1': []}
     device_type = 'cuda' if torch.cuda.is_available() else 'cpu'
-    try:
-        scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
-    except Exception:
-        scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
+    scaler = torch.amp.GradScaler(device_type, enabled=torch.cuda.is_available())
     
     print(f"🚀 Memulai Training {MODEL_NAME} ({num_epochs} Epochs)...")
     start_time = time.time()
@@ -205,11 +202,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
             images, labels = images.to(DEVICE), labels.to(DEVICE)
             optimizer.zero_grad()
             
-            try:
-                autocast_ctx = torch.amp.autocast(device_type=device_type, enabled=torch.cuda.is_available())
-            except Exception:
-                autocast_ctx = torch.cuda.amp.autocast(enabled=torch.cuda.is_available())
-            with autocast_ctx:
+            with torch.amp.autocast(device_type=device_type, enabled=torch.cuda.is_available()):
                 outputs = model(images)
                 loss = criterion(outputs, labels)
                 
@@ -233,11 +226,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
         with torch.no_grad():
             for images, labels, _ in val_loader:
                 images, labels = images.to(DEVICE), labels.to(DEVICE)
-                try:
-                autocast_ctx = torch.amp.autocast(device_type=device_type, enabled=torch.cuda.is_available())
-            except Exception:
-                autocast_ctx = torch.cuda.amp.autocast(enabled=torch.cuda.is_available())
-            with autocast_ctx:
+                with torch.amp.autocast(device_type=device_type, enabled=torch.cuda.is_available()):
                     outputs = model(images)
                     loss = criterion(outputs, labels)
                     
