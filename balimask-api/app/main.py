@@ -1,5 +1,5 @@
 """
-main.py — Pintu masuk API (FastAPI).
+main.py - Pintu masuk API (FastAPI).
 
 Jalankan:   uvicorn app.main:app --reload
 Lalu buka:  http://127.0.0.1:8000        (interface uji)
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="BaliMask Classifier API",
-    description="Klasifikasi 13 kelas Topeng Bali — komparasi 4 arsitektur × 3 versi training.",
+    description="Klasifikasi 13 kelas Topeng Bali - komparasi 4 arsitektur × 3 versi training.",
     version="1.0.0",
     lifespan=lifespan,
 )

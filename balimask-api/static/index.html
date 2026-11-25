@@ -254,8 +254,8 @@ pre{background:#151412;color:#eee6d8;border-radius:10px;padding:14px;font:12px/1
     </div>
     <div class="chips">
       <span class="chip"><span class="dot" id="srvDot"></span><span id="srvTxt">Menghubungi API…</span></span>
-      <span class="chip mono" id="devChip">device: –</span>
-      <span class="chip" id="curveChip">kurva: –</span>
+      <span class="chip mono" id="devChip">device: -</span>
+      <span class="chip" id="curveChip">kurva: -</span>
       <button class="theme" id="themeBtn" title="Ganti tema terang / gelap">☾ Gelap</button>
     </div>
   </div>
@@ -288,7 +288,7 @@ pre{background:#151412;color:#eee6d8;border-radius:10px;padding:14px;font:12px/1
         <span class="eyebrow">Ringkasan</span>
         <div class="agree">
           <div class="ring" id="ring"><b id="ringPct">0%</b></div>
-          <div><div class="sub">Konsensus (voting)</div><h3 id="vname">–</h3><div class="sub" id="vsub"></div></div>
+          <div><div class="sub">Konsensus (voting)</div><h3 id="vname">-</h3><div class="sub" id="vsub"></div></div>
         </div>
         <div id="truthBox"></div>
         <div class="kv" id="kv"></div>
@@ -380,9 +380,9 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const S = { meta: null, file: null, data: null, view: "matrix", curves: null, sel: null, metric: "val_acc", vf: new Set(["v1_awal", "v2_clean", "v3_padat"]), sort: ["test_acc", -1] };
 
-const pretty = (s) => (s ? s.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ") : "–");
+const pretty = (s) => (s ? s.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ") : "-");
 const pct = (p, d = 1) => (p * 100).toFixed(d) + "%";
-const f1 = (v, d = 1) => (v == null ? "–" : Number(v).toFixed(d));
+const f1 = (v, d = 1) => (v == null ? "-" : Number(v).toFixed(d));
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3500); }
 const short = (r) => `${r.arch_label.replace(" + CBAM", "")} · ${r.version_label}`;
@@ -484,7 +484,7 @@ $("#tabs").addEventListener("click", (e) => {
 });
 
 /* =====================================================================
-   1) INFO MODEL  —  GET /api/health + GET /api/models
+   1) INFO MODEL  -  GET /api/health + GET /api/models
    ===================================================================== */
 async function loadMeta() {
   try {
@@ -527,7 +527,7 @@ window.addEventListener("paste", (e) => { const f = [...e.clipboardData.files][0
 $("#truth").addEventListener("change", () => { if (S.data && S.data !== "loading") { renderSummary(); render(); } });
 
 /* =====================================================================
-   3) PREDIKSI  —  POST /api/predict  (multipart/form-data, field "file")
+   3) PREDIKSI  -  POST /api/predict  (multipart/form-data, field "file")
    ===================================================================== */
 $("#run").addEventListener("click", async () => {
   if (!S.file) return;
@@ -562,7 +562,7 @@ function cardHTML(m, r) {
     <div class="top"><div class="pred">${pretty(r.top1.label)}</div><div class="conf">${pct(r.top1.prob, 0)}</div></div>
     <div class="bar"><i style="--w:${r.top1.prob * 100}%"></i></div>
     <div class="mini">${r.topk.slice(1).map((k) => `<div><em>${pretty(k.label)}</em><span>${pct(k.prob)}</span></div>`).join("")}</div>
-    <div class="foot"><span class="mono">${r.inference_ms ? r.inference_ms + " ms" : "–"}</span>${badge}</div></div>`;
+    <div class="foot"><span class="mono">${r.inference_ms ? r.inference_ms + " ms" : "-"}</span>${badge}</div></div>`;
 }
 
 function render() {
@@ -603,7 +603,7 @@ function renderSummary() {
   $("#ringPct").textContent = pct(s.agreement, 0);
   $("#vname").textContent = pretty(s.consensus_label);
   $("#vsub").textContent = `dipilih ${s.votes} dari ${s.total_models} model`;
-  const name = (id) => { const r = d.results.find((x) => x.id === id); return r ? short(r) : "–"; };
+  const name = (id) => { const r = d.results.find((x) => x.id === id); return r ? short(r) : "-"; };
   const ens = s.ensemble_top[0];
   $("#kv").innerHTML = `<span>Ensemble (rata-rata)</span><span>${pretty(ens.label)} ${pct(ens.prob)}</span>
     <span>Paling yakin</span><span>${name(s.most_confident)}</span><span>Tercepat</span><span>${name(s.fastest)}</span>
@@ -650,7 +650,7 @@ $("#viewSeg").addEventListener("click", (e) => {
 });
 
 /* =====================================================================
-   4) KURVA TRAINING  —  GET /api/curves
+   4) KURVA TRAINING  -  GET /api/curves
    ===================================================================== */
 async function loadCurves(force) {
   if (S.curves && !force) return;
@@ -667,7 +667,7 @@ async function loadCurves(force) {
     const msg = err === "old"
       ? `<b>Server yang berjalan masih versi lama</b>, jadi data kurva belum bisa diambil (endpoint <code>/api/curves</code> belum ada).<br>
          Di terminal VS Code tekan <b>Ctrl + C</b> untuk menghentikan server, jalankan lagi <code>.\\jalankan.ps1</code>, lalu tekan <b>F5</b> di halaman ini.`
-      : `Gagal membaca kurva training: <code>${esc(err)}</code><br>Lihat pesan error di terminal VS Code dan kirimkan ke Claude.`;
+      : `Gagal membaca kurva training: <code>${esc(err)}</code><br>Periksa pesan log error di terminal server.`;
     $("#picker").innerHTML = `<div class="err-box" style="grid-column:1/-1">${msg}</div>`;
     $("#curveBody").innerHTML = "";
     $("#cmpChart").innerHTML = `<div class="err-box">${msg}</div>`;
@@ -712,8 +712,8 @@ function renderCurve() {
       <div class="stat"><span>Jumlah epoch</span><b>${c.epochs}</b><small>${[...new Set(c.phases)].join(" → ")}</small></div>
       <div class="stat"><span>Epoch terbaik</span><b>${c.best_epoch}</b><small>dipilih dari ${b.val_f1 != null ? "Val Macro-F1" : "Val Loss"}</small></div>
       <div class="stat"><span>Val akurasi (terbaik)</span><b>${f1(b.val_acc)}%</b><small>train ${f1(b.train_acc)}%</small></div>
-      <div class="stat"><span>Test akurasi</span><b>${c.test && c.test.accuracy != null ? c.test.accuracy.toFixed(2) + "%" : "–"}</b><small>data uji</small></div>
-      <div class="stat"><span>Test Macro-F1</span><b>${c.test && c.test.macro_f1 != null ? c.test.macro_f1.toFixed(2) + "%" : "–"}</b><small>rata-rata 13 kelas</small></div>
+      <div class="stat"><span>Test akurasi</span><b>${c.test && c.test.accuracy != null ? c.test.accuracy.toFixed(2) + "%" : "-"}</b><small>data uji</small></div>
+      <div class="stat"><span>Test Macro-F1</span><b>${c.test && c.test.macro_f1 != null ? c.test.macro_f1.toFixed(2) + "%" : "-"}</b><small>rata-rata 13 kelas</small></div>
     </div>
     <div class="charts3">
       <div class="panel"><h4>Loss</h4><p class="s">Semakin turun semakin baik. Val loss naik saat train loss turun = tanda overfitting.</p><div id="cLoss"></div></div>
@@ -739,7 +739,7 @@ function insight(c, gap, lossGap) {
   const H = c.history, first = H.val_acc[0], last = H.val_acc[H.val_acc.length - 1];
   const s = [];
   s.push(`<b>${esc(c.arch_label)} (${esc(c.version_label)})</b> dilatih ${c.epochs} epoch; akurasi validasi naik dari <b>${f1(first)}%</b> di epoch 1 menjadi <b>${f1(c.best.val_acc)}%</b> di epoch terbaik (${c.best_epoch}).`);
-  if (gap != null) s.push(gap < 3 ? `Selisih akurasi train–val hanya <b>${gap.toFixed(1)} poin</b>, jadi model <b>tidak menunjukkan overfitting berarti</b>.` : gap < 8 ? `Selisih akurasi train–val <b>${gap.toFixed(1)} poin</b>: ada sedikit overfitting, masih wajar.` : `Selisih akurasi train–val <b>${gap.toFixed(1)} poin</b>: model cenderung <b>overfitting</b>.`);
+  if (gap != null) s.push(gap < 3 ? `Selisih akurasi train-val hanya <b>${gap.toFixed(1)} poin</b>, jadi model <b>tidak menunjukkan overfitting berarti</b>.` : gap < 8 ? `Selisih akurasi train-val <b>${gap.toFixed(1)} poin</b>: ada sedikit overfitting, masih wajar.` : `Selisih akurasi train-val <b>${gap.toFixed(1)} poin</b>: model cenderung <b>overfitting</b>.`);
   const tail = H.val_loss.slice(-3), minL = Math.min(...H.val_loss);
   if (tail.length === 3 && tail[2] > minL * 1.15) s.push(`Val loss di akhir training naik lagi dari titik terendahnya, sehingga memakai bobot epoch terbaik (bukan epoch terakhir) adalah keputusan yang tepat.`);
   if (c.test && c.test.accuracy != null) s.push(`Pada data uji, model mencapai akurasi <b>${c.test.accuracy.toFixed(2)}%</b>${c.test.macro_f1 != null ? ` dengan Macro-F1 <b>${c.test.macro_f1.toFixed(2)}%</b>` : ""}.`);
@@ -794,10 +794,10 @@ function renderTable() {
   $("#mtable").innerHTML = `<thead><tr>${cols.map(([key, lab, num]) => `<th class="${num ? "num" : ""}" data-k="${key}">${lab}${S.sort[0] === key ? (S.sort[1] > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead>
     <tbody>${rows.map((r) => `<tr><td><span class="vpill" style="--c:${ACOL[r.aid]}"><i></i>${esc(r.arch)}</span></td>
       <td><span class="vpill" style="--c:${VCOL[r.vid]}"><i></i>${esc(r.ver)}</span></td>
-      <td class="num">${r.epochs ?? "–"}</td><td class="num">${r.best_val != null ? r.best_val.toFixed(2) + "%" : "–"}</td>
-      <td class="num ${r.test_acc === maxT ? "hi" : ""}">${r.test_acc != null ? r.test_acc.toFixed(2) + "%" : "–"}</td>
-      <td class="num ${r.test_f1 === maxF ? "hi" : ""}">${r.test_f1 != null ? r.test_f1.toFixed(2) + "%" : "–"}</td>
-      <td class="num">${r.params ?? "–"}</td><td>${r.weight ? `<span class="pill y">ada</span>` : `<span class="pill n">belum</span>`}</td></tr>`).join("")}</tbody>`;
+      <td class="num">${r.epochs ?? "-"}</td><td class="num">${r.best_val != null ? r.best_val.toFixed(2) + "%" : "-"}</td>
+      <td class="num ${r.test_acc === maxT ? "hi" : ""}">${r.test_acc != null ? r.test_acc.toFixed(2) + "%" : "-"}</td>
+      <td class="num ${r.test_f1 === maxF ? "hi" : ""}">${r.test_f1 != null ? r.test_f1.toFixed(2) + "%" : "-"}</td>
+      <td class="num">${r.params ?? "-"}</td><td>${r.weight ? `<span class="pill y">ada</span>` : `<span class="pill n">belum</span>`}</td></tr>`).join("")}</tbody>`;
   $$("#mtable th").forEach((th) => th.addEventListener("click", () => { const key = th.dataset.k; S.sort = [key, S.sort[0] === key ? -S.sort[1] : -1]; renderTable(); }));
 }
 

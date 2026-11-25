@@ -104,7 +104,7 @@ else {
     & $py -c "import numpy, PIL.Image, pydantic_core, torch, torchvision, fastapi, uvicorn; print('  numpy', numpy.__version__, '| torch', torch.__version__)"
     if ($LASTEXITCODE -ne 0) {
         Say ''
-        Say 'Masih ada library yang gagal dimuat. Salin pesan error di atas dan tanyakan ke Claude.' Red
+        Say 'Masih ada library yang gagal dimuat. Periksa pesan error di atas atau cek requirements.txt.' Red
         Read-Host 'Tekan Enter untuk menutup'
         exit 1
     }

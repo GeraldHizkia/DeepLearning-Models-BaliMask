@@ -1,5 +1,5 @@
 """
-curves.py — Membaca KURVA TRAINING (loss & akurasi per epoch) dari file notebook.
+curves.py - Membaca KURVA TRAINING (loss & akurasi per epoch) dari file notebook.
 
 Kenapa dari notebook?
     Notebook training hanya menyimpan bobot (.pth). Riwayat per epoch cuma

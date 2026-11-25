@@ -1,5 +1,5 @@
 """
-config.py — "Daftar isi" semua model.
+config.py - "Daftar isi" semua model.
 
 Kalau nanti kamu menambah / mengganti model, cukup ubah file ini.
 API tidak perlu diubah sama sekali.
@@ -31,7 +31,7 @@ MAX_UPLOAD_MB = float(os.getenv("BALIMASK_MAX_MB", "10"))
 MOBILENET_V1_VARIANT = os.getenv("BALIMASK_MNV1_VARIANT", "cbam_head")
 
 # ---------------------------------------------------------------------------
-# 13 kelas — URUTANNYA HARUS SAMA dengan saat training
+# 13 kelas - URUTANNYA HARUS SAMA dengan saat training
 # (di notebook: sorted(nama folder) -> urutan alfabet)
 # ---------------------------------------------------------------------------
 CLASSES = [

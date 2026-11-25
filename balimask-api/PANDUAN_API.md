@@ -65,7 +65,7 @@ async def predict_all(file: UploadFile = File(...), top_k: int = Query(3, ge=1, 
 
 Dari satu fungsi itu, FastAPI otomatis:
 1. **Mendaftarkan endpoint** `POST /api/predict` (dari decorator `@app.post`)
-2. **Membaca & memvalidasi input**: `top_k` harus int antara 1–13. Kalau user kirim `top_k=99`,
+2. **Membaca & memvalidasi input**: `top_k` harus int antara 1-13. Kalau user kirim `top_k=99`,
    FastAPI langsung membalas error 422 tanpa kamu tulis `if`.
 3. **Mengubah return dict → JSON**
 4. **Membuat dokumentasi interaktif** di `/docs`. Buka ini dan klik "Try it out".
@@ -110,7 +110,7 @@ Kalau kerangkanya beda sedikit saja, `load_state_dict(strict=True)` akan error
 `Missing key(s)` / `Unexpected key(s)`. **Error ini justru teman kita**: dia memberi tahu
 kerangka belum cocok. Dropout tidak punya bobot, jadi nilai p-nya boleh beda.
 
-> ✔ Kode ini sudah diuji: model dibangun dari kode sel notebook asli, `state_dict`-nya disimpan,
+> [v] Kode ini sudah diuji: model dibangun dari kode sel notebook asli, `state_dict`-nya disimpan,
 > lalu ke-12 berhasil di-load oleh API dengan `strict=True`.
 
 ### 4.3 `weights=None`
@@ -190,7 +190,7 @@ Kalau RAM laptop terbatas, pakai `BALIMASK_LAZY=1`: model baru dimuat saat perta
   `agreement = suara / jumlah model` → seberapa kompak model-model setuju.
 - **Ensemble**: rata-rata vektor probabilitas 12 model, lalu ambil yang tertinggi.
   Biasanya lebih stabil daripada satu model.
-- **Label asli (opsional di UI)**: kalau kamu tahu jawabannya, UI menandai ✓/✗ per model.
+- **Label asli (opsional di UI)**: kalau kamu tahu jawabannya, UI menandai [v]/[x] per model.
   Berguna untuk mengecek kasus sulit seperti *macan vs barong-bangkal vs barong-ket*.
 
 ---

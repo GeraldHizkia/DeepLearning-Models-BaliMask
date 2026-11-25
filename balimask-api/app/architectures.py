@@ -1,5 +1,5 @@
 """
-architectures.py — Membangun ULANG kerangka (arsitektur) tiap model.
+architectures.py - Membangun ULANG kerangka (arsitektur) tiap model.
 
 Kenapa perlu? File .pth dari notebook hanya berisi ANGKA bobot (state_dict),
 bukan kerangka modelnya. Jadi kita harus membuat kerangka yang PERSIS sama
@@ -132,7 +132,7 @@ class MobileNetV3_CBAM(nn.Module):
 
 
 # ===========================================================================
-# Builder v1 — notebooks_v1_baseline
+# Builder v1 - notebooks_v1_baseline
 # ===========================================================================
 def _convnext_v1():
     m = models.convnext_tiny(weights=None)
@@ -172,7 +172,7 @@ def _mobilenet_v1(variant=MOBILENET_V1_VARIANT):
 
 
 # ===========================================================================
-# Builder v2 & v3 — notebooks_v2_canonical (Canonical & Ultra-Robust)
+# Builder v2 & v3 - notebooks_v2_canonical (Canonical & Ultra-Robust)
 # Struktur layer-nya sama; yang beda hanya nilai dropout (tidak memengaruhi bobot).
 # ===========================================================================
 def _convnext_v2():

@@ -1,5 +1,5 @@
 """
-inference.py — "Dapur" API: memuat model & menjalankan prediksi.
+inference.py - "Dapur" API: memuat model & menjalankan prediksi.
 
 Alur satu gambar:
   bytes upload -> PIL.Image -> preprocessing (resize, normalize) -> tensor
