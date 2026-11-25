@@ -1,0 +1,9 @@
+Taruh 4 file bobot untuk versi: Dataset Awal (notebooks_v1_baseline)
+
+Nama file harus persis seperti ini:
+  convnext_tiny.pth
+  efficientnetv2_s.pth
+  mobilenetv3_cbam.pth
+  vgg16.pth
+
+File ini boleh dihapus.

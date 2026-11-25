@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("tl-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TopengLab · Komparasi Model Topeng Bali</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ece7dd; --panel:#f8f5ef; --panel2:#f1ece3; --ink:#2a251f; --ink2:#4f463c; --muted:#857a6b;
+  --line:#ddd3c3; --line2:#cfc2ad;
+  --red:#9b2a26; --gold:#a8742a; --black:#2a251f; --onred:#fff;
+  --v1:#64748b; --v2:#a8742a; --v3:#9b2a26;
+  --ok:#2f7d4a; --bad:#a83a3a; --okbg:rgba(47,125,74,.12); --badbg:rgba(168,58,58,.12); --goldbg:rgba(168,116,42,.12);
+  --hover:#efe6d8; --tipbg:rgba(30,27,23,.95); --tipink:#f3ece0; --tiphead:#e9c58a; --cross:rgba(42,37,31,.3); --markfill:#fff;
+  --pole1:#3a342d; --pole2:#e9e2d5;
+  --a-convnext_tiny:#1d4ed8; --a-efficientnetv2_s:#047857; --a-mobilenetv3_cbam:#7c3aed; --a-vgg16:#c2410c;
+  --r:14px; --shadow:0 1px 2px rgba(40,30,15,.06),0 6px 24px -12px rgba(40,30,15,.18);
+  --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+[data-theme="dark"]{
+  --bg:#1b1a18; --panel:#242220; --panel2:#2b2926; --ink:#e6dfd3; --ink2:#c2b9aa; --muted:#938a7c;
+  --line:#37342f; --line2:#47433c;
+  --red:#d9776f; --gold:#d4a65a; --black:#e6dfd3; --onred:#1b1a18;
+  --v1:#9aa6b8; --v2:#d4a65a; --v3:#d9776f;
+  --ok:#7cc896; --bad:#e58b8b; --okbg:rgba(124,200,150,.13); --badbg:rgba(229,139,139,.13); --goldbg:rgba(212,166,90,.13);
+  --hover:#302d29; --tipbg:rgba(14,13,12,.96); --tipink:#ece6da; --tiphead:#e6bf7f; --cross:rgba(230,223,211,.3); --markfill:#242220;
+  --shadow:0 1px 2px rgba(0,0,0,.25),0 8px 24px -14px rgba(0,0,0,.6);
+  --pole1:#2b2926; --pole2:#3b3833;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+body,.panel,.card,.stat,.pk,header{transition:background-color .25s,border-color .25s,color .25s}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh}
+button,select,input{font:inherit;color:inherit}
+.mono{font-family:var(--mono)}
+.poleng{height:5px;background:repeating-conic-gradient(var(--pole1) 0 25%,var(--pole2) 0 50%) 0 0/10px 10px}
+
+/* ---------- Header ---------- */
+header{background:var(--panel);border-bottom:1px solid var(--line)}
+.hwrap{max-width:1400px;margin:auto;padding:18px 28px 0;display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:14px;flex:1;min-width:280px}
+.logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(145deg,var(--red),#6d0f12);display:grid;place-items:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.15)}
+.brand h1{font:700 26px/1 var(--serif);letter-spacing:-.01em}
+.brand h1 span{color:var(--red)}
+.brand p{color:var(--muted);font-size:13px;margin-top:5px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:#bbb}
+.dot.on{background:var(--ok);box-shadow:0 0 0 3px rgba(21,128,61,.15)}
+.dot.off{background:var(--bad)}
+nav{max-width:1400px;margin:auto;padding:0 28px;display:flex;gap:4px;margin-top:16px;overflow-x:auto}
+nav button{border:0;background:none;padding:12px 16px 13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;gap:8px;align-items:center}
+nav button .n{font:600 11px var(--mono);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+nav button:hover{color:var(--ink)}
+nav button.on{color:var(--ink);border-bottom-color:var(--red)}
+nav button.on .n{background:var(--red);border-color:var(--red);color:var(--onred)}
+.theme{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer;color:var(--ink2)}
+.theme:hover{border-color:var(--line2);color:var(--ink)}
+.err-box{padding:16px 18px;border:1px solid var(--bad);background:var(--badbg);color:var(--ink);border-radius:12px;font-size:13.5px;line-height:1.6}
+.err-box code{font:12px var(--mono);background:var(--panel);border:1px solid var(--line);padding:2px 6px;border-radius:5px}
+nav a{margin-left:auto;align-self:center;font-size:12.5px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px}
+nav a:hover{background:var(--panel2);color:var(--ink)}
+
+main{max-width:1400px;margin:auto;padding:24px 28px 60px}
+.tab{display:none;animation:fade .25s ease}
+.tab.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.ph h2{font:700 21px/1.2 var(--serif)}
+.ph p{color:var(--muted);font-size:13px;margin-top:3px;max-width:720px}
+.eyebrow{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:block}
+
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;padding:6px 13px;border-radius:7px;font-weight:600;font-size:13px;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* ---------- TAB 1: Uji ---------- */
+.uji{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start}
+.side{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px}
+.side .panel{padding:18px}
+.drop{position:relative;border:1.5px dashed var(--line2);border-radius:12px;aspect-ratio:1/1;display:grid;place-items:center;text-align:center;cursor:pointer;overflow:hidden;background:var(--panel2);transition:.2s}
+.drop:hover,.drop.over{border-color:var(--red);background:var(--hover)}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.drop .hint{padding:20px;color:var(--muted);font-size:13px}
+.drop .hint b{display:block;color:var(--ink);font-size:15px;margin:10px 0 4px}
+.drop .ico{width:46px;height:46px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;margin:auto;font-size:20px}
+.drop .chg{position:absolute;right:10px;bottom:10px;z-index:2;background:rgba(31,26,20,.8);color:#fff;border:0;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;display:none}
+.drop.has .chg{display:block}
+.fname{font-size:12px;color:var(--muted);margin-top:8px;min-height:18px;word-break:break-all}
+label.lbl{display:block;font-weight:600;font-size:13px;margin:14px 0 6px}
+label.lbl small{color:var(--muted);font-weight:400}
+select{width:100%;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);cursor:pointer}
+.btn{width:100%;margin-top:14px;border:0;border-radius:10px;padding:12px;background:var(--red);color:var(--onred);font-weight:600;cursor:pointer;transition:.15s}
+.btn:hover:not(:disabled){filter:brightness(1.1)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+.sum h3{font:700 22px var(--serif);margin:2px 0}
+.sum .sub{color:var(--muted);font-size:12.5px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;font-size:12.5px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.kv span:nth-child(odd){color:var(--muted)}
+.kv span:nth-child(even){text-align:right;font-weight:600}
+.agree{display:flex;gap:14px;align-items:center}
+.ring{--p:0;width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--red) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
+.ring b{width:50px;height:50px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font:600 13px var(--mono)}
+.truth{margin-top:12px;padding:9px 12px;border-radius:9px;font-weight:600;font-size:13px}
+.truth.good{background:var(--okbg);color:var(--ok)} .truth.badc{background:var(--badbg);color:var(--bad)}
+
+.legend-v{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}
+.legend-v i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+.matrix{display:grid;grid-template-columns:150px repeat(3,1fr);gap:12px}
+.colhead{padding:4px 2px 10px;border-bottom:2px solid var(--c)}
+.colhead b{display:flex;align-items:center;gap:8px;font-size:14px}
+.colhead b i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.colhead p{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.35}
+.rowhead{display:flex;flex-direction:column;justify-content:center;padding-right:6px}
+.rowhead b{font:700 15px/1.2 var(--serif)}
+.rowhead small{font:11px var(--mono);color:var(--muted);margin-top:4px}
+.rowhead .sw{width:22px;height:3px;border-radius:2px;background:var(--a);margin-bottom:8px}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:12px;padding:13px 14px;min-height:148px;display:flex;flex-direction:column;cursor:default;transition:.18s}
+.card[data-id]{cursor:pointer}
+.card[data-id]:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.card.best{box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+.card .crown{position:absolute;top:-11px;right:10px;background:var(--gold);color:var(--onred);font:600 10.5px var(--sans);padding:2px 8px;border-radius:999px}
+.card.idle,.card.empty{justify-content:center;align-items:center;text-align:center;color:var(--muted);font-size:12.5px;background:var(--panel2)}
+.card.empty code{display:block;margin-top:6px;font:11px var(--mono);color:var(--muted);opacity:.8;word-break:break-all}
+.card.empty.err{color:var(--bad)}
+.card.demo{background:repeating-linear-gradient(135deg,var(--panel) 0 10px,var(--panel2) 10px 20px)}
+.card .st{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.card .st .d{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.card .pred{font:700 18px/1.15 var(--serif)}
+.card .conf{font:600 13px var(--mono);color:var(--ink2)}
+.card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin:9px 0 8px}
+.bar>i{display:block;height:100%;width:0;background:var(--c);border-radius:9px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.mini{font-size:12px;color:var(--ink2);display:grid;gap:2px}
+.mini div{display:flex;justify-content:space-between}
+.mini em{font-style:normal;color:var(--muted)}
+.card .foot{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted)}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px}
+.badge.ok{background:var(--okbg);color:var(--ok)} .badge.no{background:var(--badbg);color:var(--bad)}
+.badge.ag{background:var(--goldbg);color:var(--gold)} .badge.dm{background:var(--line);color:var(--muted)}
+.skel{background:linear-gradient(90deg,var(--panel2) 25%,var(--hover) 50%,var(--panel2) 75%) 0/200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.rank{display:flex;flex-direction:column;gap:8px}
+.rk{display:grid;grid-template-columns:34px 1.3fr 1fr 1.4fr 80px;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px 14px;cursor:pointer}
+.rk .n{font:600 13px var(--mono);color:var(--muted)}
+.rk small{display:block;color:var(--muted);font-size:11.5px}
+.rk .bar{margin:0}
+.rk .t{font:12px var(--mono);text-align:right;color:var(--ink2)}
+
+.section{margin-top:26px;padding:20px 22px}
+
+/* ---------- Grafik ---------- */
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart .ax{stroke:var(--line2)} .chart .grid{stroke:var(--line);stroke-dasharray:2 4}
+.chart text{fill:var(--muted);font:11px var(--sans)}
+.chart .axt{fill:var(--ink2);font-weight:600}
+.chart .tip{position:absolute;pointer-events:none;background:var(--tipbg);color:var(--tipink);border-radius:9px;padding:9px 11px;font-size:12px;min-width:150px;opacity:0;transition:opacity .12s;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.chart .tip b{display:block;font-size:12px;margin-bottom:5px;color:var(--tiphead)}
+.chart .tip div{display:flex;justify-content:space-between;gap:14px;white-space:nowrap}
+.chart .tip i{display:inline-block;width:9px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px}
+.lg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px}
+.lg span{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;color:var(--ink2);padding:2px 0}
+.lg span.off{opacity:.35;text-decoration:line-through}
+.lg svg{flex:none}
+.empty-chart{display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;min-height:220px;padding:20px;border:1.5px dashed var(--line2);border-radius:12px;background:var(--panel2)}
+.empty-chart code{font:12px var(--mono);background:var(--panel);border:1px solid var(--line);padding:2px 6px;border-radius:5px;color:var(--ink)}
+
+/* ---------- TAB 2: Kurva ---------- */
+.picker{display:grid;grid-template-columns:150px repeat(3,1fr);gap:8px;align-items:center}
+.picker .h{font-size:12px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:7px}
+.picker .h i{width:9px;height:9px;border-radius:3px;background:var(--c)}
+.picker .rh{font:700 14px var(--serif)}
+.pk{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 12px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px;transition:.15s;color:var(--ink2)}
+.pk:hover:not(:disabled){border-color:var(--c)}
+.pk:disabled{cursor:not-allowed;opacity:.5}
+.pk.on{background:var(--panel);border-color:var(--c);box-shadow:0 0 0 2px var(--c);color:var(--ink);font-weight:600}
+.pk .tag{font:600 10.5px var(--mono);color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:20px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.stat span{font-size:11.5px;color:var(--muted);display:block}
+.stat b{font:700 22px/1.25 var(--serif);display:block;margin-top:3px}
+.stat small{font-size:11.5px;color:var(--muted)}
+.charts3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.charts3 .panel{padding:16px 16px 12px}
+.charts3 h4,.cmp h4{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.charts3 p.s,.cmp p.s{font-size:12px;color:var(--muted);margin-bottom:8px}
+.insight{margin-top:16px;padding:14px 18px;border-left:4px solid var(--gold);background:var(--goldbg);border-radius:0 12px 12px 0;font-size:13.5px;color:var(--ink2)}
+.insight b{color:var(--ink)}
+
+/* ---------- TAB 3: Perbandingan ---------- */
+.cmp{padding:18px 20px}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px}
+.fchips{display:flex;gap:6px;flex-wrap:wrap}
+.fchips button{border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;color:var(--ink2);display:inline-flex;align-items:center;gap:6px}
+.fchips button i{width:9px;height:9px;border-radius:3px;background:var(--c)}
+.fchips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line2);cursor:pointer;white-space:nowrap}
+th:hover{color:var(--ink)}
+td{padding:10px 12px;border-bottom:1px solid var(--line)}
+td.num{font-family:var(--mono);text-align:right}
+th.num{text-align:right}
+tr:hover td{background:var(--panel2)}
+.vpill{display:inline-flex;align-items:center;gap:6px;font-size:12px}
+.vpill i{width:9px;height:9px;border-radius:3px;background:var(--c)}
+.hi{font-weight:700;color:var(--ok)}
+.pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px}
+.pill.y{background:var(--okbg);color:var(--ok)} .pill.n{background:var(--line);color:var(--muted)}
+
+/* ---------- Modal & toast ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,9,8,.55);backdrop-filter:blur(3px);display:none;place-items:center;z-index:50;padding:20px}
+.modal.show{display:grid}
+.sheet{background:var(--panel);border-radius:16px;max-width:680px;width:100%;max-height:88vh;overflow:auto;padding:24px;position:relative}
+.sheet h3{font:700 22px var(--serif)}
+.sheet .meta{color:var(--muted);font-size:12.5px;margin:4px 0 16px}
+.sheet .x{position:absolute;top:16px;right:16px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px}
+.dist{display:grid;gap:7px}
+.dist div{display:grid;grid-template-columns:120px 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.dist .bar{margin:0}
+.dist span:last-child{font:12px var(--mono);text-align:right}
+.dist .hit{font-weight:700}
+pre{background:#151412;color:#eee6d8;border-radius:10px;padding:14px;font:12px/1.5 var(--mono);overflow:auto;max-height:60vh}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1100px){.uji{grid-template-columns:1fr}.side{position:static}.charts3{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.matrix,.picker{grid-template-columns:1fr}.colhead,.picker .h{display:none}.hwrap,main,nav{padding-left:16px;padding-right:16px}.stats{grid-template-columns:repeat(2,1fr)}.rk{grid-template-columns:28px 1fr 70px}.rk .p,.rk .bar{display:none}}
+</style>
+</head>
+<body>
+<div class="poleng"></div>
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9c0-3 4-5 10-5s10 2 10 5v6c0 8-5 13-10 13S6 23 6 15z"/><path d="M10 13c1.5-1.2 3-1.2 4.5 0M17.5 13c1.5-1.2 3-1.2 4.5 0"/><path d="M12 21c2.5 2 5.5 2 8 0"/><path d="M16 15v3"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Topeng<span>Lab</span></h1>
+        <p>Klasifikasi 13 kelas Topeng Bali · 4 arsitektur × 3 versi training</p>
+      </div>
+    </div>
+    <div class="chips">
+      <span class="chip"><span class="dot" id="srvDot"></span><span id="srvTxt">Menghubungi API…</span></span>
+      <span class="chip mono" id="devChip">device: –</span>
+      <span class="chip" id="curveChip">kurva: –</span>
+      <button class="theme" id="themeBtn" title="Ganti tema terang / gelap">☾ Gelap</button>
+    </div>
+  </div>
+  <nav id="tabs">
+    <button data-t="uji" class="on"><span class="n">1</span>Uji Gambar</button>
+    <button data-t="kurva"><span class="n">2</span>Kurva Training</button>
+    <button data-t="banding"><span class="n">3</span>Perbandingan Model</button>
+    <a href="/docs" target="_blank">Dokumentasi API ↗</a>
+  </nav>
+</header>
+
+<main>
+<!-- =========================== TAB 1: UJI GAMBAR =========================== -->
+<section class="tab on" id="tab-uji">
+  <div class="uji">
+    <aside class="side">
+      <div class="panel">
+        <span class="eyebrow">Langkah 1 · Gambar uji</span>
+        <div class="drop" id="drop" tabindex="0">
+          <div class="hint" id="hint"><div class="ico">⬆</div><b>Seret gambar ke sini</b>atau klik untuk memilih · bisa juga tempel (Ctrl+V)<br><small>JPG · PNG · WEBP · maks 10 MB</small></div>
+          <button class="chg" id="chg">Ganti gambar</button>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+        <div class="fname" id="fname"></div>
+        <label class="lbl" for="truth">Langkah 2 · Label asli <small>(opsional)</small></label>
+        <select id="truth"><option value="">Tidak tahu / tidak dicek</option></select>
+        <button class="btn" id="run" disabled>Uji ke Semua Model</button>
+      </div>
+      <div class="panel sum" id="sumPanel" hidden>
+        <span class="eyebrow">Ringkasan</span>
+        <div class="agree">
+          <div class="ring" id="ring"><b id="ringPct">0%</b></div>
+          <div><div class="sub">Konsensus (voting)</div><h3 id="vname">–</h3><div class="sub" id="vsub"></div></div>
+        </div>
+        <div id="truthBox"></div>
+        <div class="kv" id="kv"></div>
+        <button class="btn ghost" id="rawBtn">Lihat JSON respons API</button>
+      </div>
+    </aside>
+
+    <div>
+      <div class="ph">
+        <div><h2>Hasil Komparasi</h2><p id="countTxt">Memuat daftar model…</p></div>
+        <div class="seg" id="viewSeg"><button data-v="matrix" class="on">Matriks</button><button data-v="rank">Ranking</button></div>
+      </div>
+      <div id="out"></div>
+
+      <div class="panel section">
+        <div class="ph" style="margin-bottom:6px">
+          <div><h2 style="font-size:18px">Grafik Probabilitas per Kelas</h2>
+          <p>Satu garis = satu model. Garis yang memuncak di kelas yang sama berarti model-model itu sepakat. Klik legenda untuk menyembunyikan garis.</p></div>
+        </div>
+        <div id="probChart"><div class="empty-chart">Grafik muncul setelah gambar diuji.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== TAB 2: KURVA TRAINING =========================== -->
+<section class="tab" id="tab-kurva">
+  <div class="ph">
+    <div><h2>Kurva Training per Model</h2>
+    <p>Loss dan akurasi tiap epoch saat pelatihan. Dipakai untuk melihat apakah model belajar dengan baik, kapan mulai stabil, dan apakah terjadi <i>overfitting</i> (train jauh lebih baik dari validasi).</p></div>
+  </div>
+  <div class="panel" style="padding:16px 18px"><div class="picker" id="picker"></div></div>
+  <div id="curveBody"></div>
+</section>
+
+<!-- =========================== TAB 3: PERBANDINGAN =========================== -->
+<section class="tab" id="tab-banding">
+  <div class="ph">
+    <div><h2>Perbandingan Semua Model</h2>
+    <p>Semua kurva digabung dalam satu grafik. Warna = arsitektur, jenis garis = versi training (titik-titik: Dataset Awal · putus-putus: Dataset Clean · utuh: Training Padat).</p></div>
+  </div>
+  <div class="panel cmp">
+    <div class="toolbar">
+      <div class="seg" id="metricSeg">
+        <button data-m="val_acc" class="on">Val Akurasi</button>
+        <button data-m="val_loss">Val Loss</button>
+        <button data-m="train_acc">Train Akurasi</button>
+        <button data-m="train_loss">Train Loss</button>
+        <button data-m="val_f1">Val Macro-F1</button>
+      </div>
+      <div class="fchips" id="verFilter"></div>
+    </div>
+    <div id="cmpChart"></div>
+  </div>
+  <div class="panel cmp" style="margin-top:18px">
+    <h4>Tabel Metrik</h4>
+    <p class="s">Klik judul kolom untuk mengurutkan. Nilai test diambil dari output notebook (data uji yang tidak dipakai training).</p>
+    <div style="overflow-x:auto"><table id="mtable"></table></div>
+  </div>
+</section>
+</main>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   API_BASE: kosong = API di server yang sama. Kalau frontend dibuka dari
+   tempat lain, isi misal "http://127.0.0.1:8000"
+   ===================================================================== */
+const API_BASE = "";
+/* Warna grafik dibedakan untuk tema terang & gelap (di tema gelap dibuat lebih lembut) */
+const PAL = {
+  light: { v: { v1_awal: "#64748b", v2_clean: "#a8742a", v3_padat: "#9b2a26" }, a: { convnext_tiny: "#2f5fc4", efficientnetv2_s: "#2f8063", mobilenetv3_cbam: "#7a52c7", vgg16: "#c0612f" },
+           train: "#2f5fc4", val: "#b8433c", f1: "#7a52c7", best: "#a8742a", gap: "#c0612f", vline: "#9b2a26" },
+  dark:  { v: { v1_awal: "#9aa6b8", v2_clean: "#d4a65a", v3_padat: "#d9776f" }, a: { convnext_tiny: "#7ea6ec", efficientnetv2_s: "#6cc4a0", mobilenetv3_cbam: "#b59cf0", vgg16: "#eba377" },
+           train: "#7ea6ec", val: "#e8918a", f1: "#b59cf0", best: "#d4a65a", gap: "#eba377", vline: "#d9776f" },
+};
+let P = PAL.dark, VCOL = P.v, ACOL = P.a;
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  P = PAL[t]; VCOL = P.v; ACOL = P.a;
+  document.getElementById("themeBtn").textContent = t === "dark" ? "☀ Terang" : "☾ Gelap";
+  try { localStorage.setItem("tl-theme", t); } catch (e) {}
+}
+const VDASH = { v1_awal: "2 4", v2_clean: "7 4", v3_padat: "" };
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const S = { meta: null, file: null, data: null, view: "matrix", curves: null, sel: null, metric: "val_acc", vf: new Set(["v1_awal", "v2_clean", "v3_padat"]), sort: ["test_acc", -1] };
+
+const pretty = (s) => (s ? s.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ") : "–");
+const pct = (p, d = 1) => (p * 100).toFixed(d) + "%";
+const f1 = (v, d = 1) => (v == null ? "–" : Number(v).toFixed(d));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3500); }
+const short = (r) => `${r.arch_label.replace(" + CBAM", "")} · ${r.version_label}`;
+
+/* =====================================================================
+   MINI LIBRARY GRAFIK GARIS (SVG, tanpa library luar)
+   lineChart(el, { series:[{name,color,dash,data:[y...] }], x:[label...],
+                   yLabel, xLabel, yFmt, vlines:[{x,label}], marks:[{x,y,color,label}] })
+   ===================================================================== */
+function lineChart(el, o) {
+  const draw = () => {
+    const W = Math.max(el.clientWidth, 280), H = o.height || 260;
+    const m = { l: 52, r: 16, t: 14, b: o.xRotate ? 66 : 40 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const vis = o.series.filter((s) => !s.off);
+    const n = o.x.length;
+    let ys = vis.flatMap((s) => s.data.filter((v) => v != null));
+    if (!ys.length) ys = [0, 1];
+    let lo = o.yMin ?? Math.min(...ys), hi = o.yMax ?? Math.max(...ys);
+    if (o.yMin == null) { const pad = (hi - lo) * 0.08 || 1; lo -= pad; hi += pad; if (o.clamp0 && lo < 0) lo = 0; }
+    if (o.yCap != null) hi = Math.min(hi, o.yCap);
+    const nice = niceTicks(lo, hi, 5); lo = nice[0]; hi = nice[nice.length - 1];
+    const X = (i) => m.l + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw);
+    const Y = (v) => m.t + ih - ((v - lo) / (hi - lo || 1)) * ih;
+    const yFmt = o.yFmt || ((v) => +v.toFixed(2));
+    let g = "";
+    nice.forEach((t) => { g += `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l - 8}" y="${Y(t) + 4}" text-anchor="end">${yFmt(t)}</text>`; });
+    const step = Math.max(1, Math.ceil(n / (iw / (o.xRotate ? 34 : 46))));
+    o.x.forEach((lab, i) => {
+      if (i % step && i !== n - 1) return;
+      g += o.xRotate
+        ? `<text transform="translate(${X(i)},${H - m.b + 12}) rotate(-38)" text-anchor="end">${esc(lab)}</text>`
+        : `<text x="${X(i)}" y="${H - m.b + 18}" text-anchor="middle">${esc(lab)}</text>`;
+    });
+    g += `<line class="ax" x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}"/>`;
+    if (o.yLabel) g += `<text class="axt" transform="translate(13,${m.t + ih / 2}) rotate(-90)" text-anchor="middle">${esc(o.yLabel)}</text>`;
+    if (o.xLabel) g += `<text class="axt" x="${m.l + iw / 2}" y="${H - 4}" text-anchor="middle">${esc(o.xLabel)}</text>`;
+    (o.vlines || []).forEach((v) => {
+      const x = (X(v.x - 1) + X(v.x)) / 2;
+      g += `<line x1="${x}" x2="${x}" y1="${m.t}" y2="${m.t + ih}" stroke="${P.vline}" stroke-dasharray="4 4" opacity=".6"/><text x="${x + 5}" y="${m.t + 11}" style="fill:${P.vline};font-size:10.5px">${esc(v.label)}</text>`;
+    });
+    vis.forEach((s) => {
+      let d = "", pen = false;
+      s.data.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? "L" : "M") + X(i).toFixed(1) + "," + Y(Math.min(v, hi)).toFixed(1); pen = true; });
+      g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.width || 2.2}" stroke-dasharray="${s.dash || ""}" stroke-linejoin="round" stroke-linecap="round" class="ln"><animate attributeName="opacity" from="0" to="1" dur=".4s"/></path>`;
+      if (s.dots) s.data.forEach((v, i) => { if (v != null) g += `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="${s.color}"/>`; });
+    });
+    (o.marks || []).forEach((k) => {
+      g += `<circle cx="${X(k.x)}" cy="${Y(k.y)}" r="6" fill="var(--markfill)" stroke="${k.color}" stroke-width="2.5"/>`;
+      if (k.label) g += `<text x="${X(k.x)}" y="${Y(k.y) - 11}" text-anchor="middle" style="fill:${k.color};font-weight:700;font-size:10.5px">${esc(k.label)}</text>`;
+    });
+    g += `<line id="xh" y1="${m.t}" y2="${m.t + ih}" stroke="var(--cross)" visibility="hidden"/><g id="hd"></g>`;
+    g += `<rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent" id="hit"/>`;
+    el.querySelector(".plot").innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}">${g}</svg>`;
+
+    const svg = el.querySelector("svg"), tip = el.querySelector(".tip"), xh = svg.querySelector("#xh"), hd = svg.querySelector("#hd");
+    svg.querySelector("#hit").addEventListener("mousemove", (e) => {
+      const r = svg.getBoundingClientRect(), mx = ((e.clientX - r.left) / r.width) * W;
+      const i = Math.max(0, Math.min(n - 1, Math.round(((mx - m.l) / iw) * (n - 1))));
+      xh.setAttribute("x1", X(i)); xh.setAttribute("x2", X(i)); xh.setAttribute("visibility", "visible");
+      const rows = vis.filter((s) => s.data[i] != null).sort((a, b) => b.data[i] - a.data[i]);
+      hd.innerHTML = rows.map((s) => `<circle cx="${X(i)}" cy="${Y(Math.min(s.data[i], hi))}" r="4" fill="${s.color}" stroke="var(--markfill)" stroke-width="1.5"/>`).join("");
+      tip.innerHTML = `<b>${esc(o.xTitle ? o.xTitle(i) : o.x[i])}</b>` + rows.map((s) => `<div><span><i style="background:${s.color}"></i>${esc(s.name)}</span><span class="mono">${(o.tipFmt || yFmt)(s.data[i])}</span></div>`).join("");
+      tip.style.opacity = 1;
+      const px = (X(i) / W) * r.width, tw = tip.offsetWidth;
+      tip.style.left = (px + 14 + tw > r.width ? px - tw - 14 : px + 14) + "px";
+      tip.style.top = Math.max(0, ((e.clientY - r.top) - 30)) + "px";
+    });
+    svg.querySelector("#hit").addEventListener("mouseleave", () => { tip.style.opacity = 0; xh.setAttribute("visibility", "hidden"); hd.innerHTML = ""; });
+  };
+  el.innerHTML = `<div class="chart"><div class="plot"></div><div class="tip"></div></div>` + (o.legend === false ? "" : `<div class="lg"></div>`);
+  const lg = el.querySelector(".lg");
+  if (lg) {
+    lg.innerHTML = o.series.map((s, k) => `<span data-k="${k}" class="${s.off ? "off" : ""}"><svg width="24" height="8"><line x1="1" x2="23" y1="4" y2="4" stroke="${s.color}" stroke-width="2.5" stroke-dasharray="${s.dash || ""}"/></svg>${esc(s.name)}</span>`).join("");
+    lg.addEventListener("click", (e) => { const sp = e.target.closest("span[data-k]"); if (!sp) return; const s = o.series[+sp.dataset.k]; s.off = !s.off; sp.classList.toggle("off", s.off); draw(); });
+  }
+  draw();
+  if (el._ro) el._ro.disconnect();
+  el._ro = new ResizeObserver(() => { clearTimeout(el._t); el._t = setTimeout(draw, 80); });
+  el._ro.observe(el);
+}
+function niceTicks(lo, hi, count) {
+  const span = hi - lo || 1, raw = span / count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((k) => k * mag).find((s) => s >= raw) || 10 * mag;
+  const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step, out = [];
+  for (let v = a; v <= b + step / 2; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+/* =====================================================================
+   NAVIGASI TAB
+   ===================================================================== */
+$("#tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-t]"); if (!b) return;
+  $$("#tabs button").forEach((x) => x.classList.toggle("on", x === b));
+  $$(".tab").forEach((t) => t.classList.toggle("on", t.id === "tab-" + b.dataset.t));
+  if (b.dataset.t !== "uji") loadCurves();
+  history.replaceState(null, "", "#" + b.dataset.t);
+});
+
+/* =====================================================================
+   1) INFO MODEL  —  GET /api/health + GET /api/models
+   ===================================================================== */
+async function loadMeta() {
+  try {
+    const [h, m] = await Promise.all([fetch(API_BASE + "/api/health").then((r) => r.json()), fetch(API_BASE + "/api/models").then((r) => r.json())]);
+    S.meta = m;
+    const real = m.models.filter((x) => x.status === "ready" || x.status === "not_loaded").length;
+    $("#srvDot").className = "dot on";
+    $("#srvTxt").textContent = `API aktif · ${real}/${m.models.length} model punya bobot`;
+    $("#devChip").textContent = "device: " + h.device;
+    m.classes.forEach((c) => $("#truth").insertAdjacentHTML("beforeend", `<option value="${c}">${pretty(c)}</option>`));
+    render();
+  } catch (e) {
+    $("#srvDot").className = "dot off"; $("#srvTxt").textContent = "API tidak terhubung";
+    $("#out").innerHTML = `<div class="empty-chart">Tidak bisa menghubungi API. Jalankan server dulu:<br><br><code>python -m uvicorn app.main:app --reload</code></div>`;
+  }
+}
+
+/* =====================================================================
+   2) UPLOAD
+   ===================================================================== */
+function setFile(f) {
+  if (!f || !f.type.startsWith("image/")) return toast("File harus berupa gambar.");
+  S.file = f; S.data = null;
+  const d = $("#drop"); d.querySelector("img")?.remove();
+  d.insertAdjacentHTML("afterbegin", `<img src="${URL.createObjectURL(f)}" alt="preview">`);
+  d.classList.add("has"); $("#hint").hidden = true;
+  $("#fname").textContent = `${f.name} · ${(f.size / 1024).toFixed(0)} KB`;
+  $("#run").disabled = false; $("#sumPanel").hidden = true;
+  $("#probChart").innerHTML = `<div class="empty-chart">Klik “Uji ke Semua Model”.</div>`;
+  render();
+}
+const drop = $("#drop");
+drop.addEventListener("click", () => $("#file").click());
+drop.addEventListener("keydown", (e) => { if (e.key === "Enter") $("#file").click(); });
+$("#file").addEventListener("change", (e) => setFile(e.target.files[0]));
+["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => setFile(e.dataTransfer.files[0]));
+window.addEventListener("paste", (e) => { const f = [...e.clipboardData.files][0]; if (f) setFile(f); });
+$("#truth").addEventListener("change", () => { if (S.data && S.data !== "loading") { renderSummary(); render(); } });
+
+/* =====================================================================
+   3) PREDIKSI  —  POST /api/predict  (multipart/form-data, field "file")
+   ===================================================================== */
+$("#run").addEventListener("click", async () => {
+  if (!S.file) return;
+  const btn = $("#run"); btn.disabled = true; btn.textContent = "Memproses…";
+  S.data = "loading"; render();
+  const form = new FormData(); form.append("file", S.file);
+  try {
+    const res = await fetch(API_BASE + "/api/predict?top_k=3", { method: "POST", body: form });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.detail || res.statusText);
+    S.data = json; renderSummary(); renderProbChart();
+  } catch (e) { S.data = null; toast("Gagal: " + e.message); }
+  finally { btn.disabled = false; btn.textContent = "Uji ke Semua Model"; render(); }
+});
+
+const isReal = (r) => r && r.status === "ok";
+function cardHTML(m, r) {
+  const c = VCOL[m.version];
+  if (S.data === "loading") return `<div class="card skel" style="--c:${c}"></div>`;
+  if (m.status === "missing" || (r && r.status === "missing")) return `<div class="card empty" style="--c:${c}">Belum dilatih<code>weights/${esc(m.weight_file)}</code></div>`;
+  if (m.status === "error" || (r && r.status === "error")) return `<div class="card empty err" style="--c:${c}">Gagal memuat bobot<code>${esc((r && r.error) || m.error || "")}</code></div>`;
+  if (!r) return `<div class="card idle${m.status === "demo" ? " demo" : ""}" style="--c:${c}">${m.status === "demo" ? "Mode demo (bukan model asli)" : "<b style='color:var(--ink)'>Siap</b>menunggu gambar"}</div>`;
+  const s = S.data.summary, truth = $("#truth").value;
+  let badge = "";
+  if (r.status === "demo") badge = `<span class="badge dm">DEMO · palsu</span>`;
+  else if (truth) badge = r.top1.label === truth ? `<span class="badge ok">✓ Benar</span>` : `<span class="badge no">✗ Salah</span>`;
+  else if (s && r.top1.label === s.consensus_label) badge = `<span class="badge ag">sesuai konsensus</span>`;
+  const best = s && s.most_confident === r.id;
+  return `<div class="card${best ? " best" : ""}${r.status === "demo" ? " demo" : ""}" style="--c:${c}" data-id="${r.id}">
+    ${best ? `<span class="crown">paling yakin</span>` : ""}
+    <div class="st"><span class="d"></span>${r.status === "demo" ? "demo" : "prediksi"}</div>
+    <div class="top"><div class="pred">${pretty(r.top1.label)}</div><div class="conf">${pct(r.top1.prob, 0)}</div></div>
+    <div class="bar"><i style="--w:${r.top1.prob * 100}%"></i></div>
+    <div class="mini">${r.topk.slice(1).map((k) => `<div><em>${pretty(k.label)}</em><span>${pct(k.prob)}</span></div>`).join("")}</div>
+    <div class="foot"><span class="mono">${r.inference_ms ? r.inference_ms + " ms" : "–"}</span>${badge}</div></div>`;
+}
+
+function render() {
+  if (!S.meta) return;
+  const out = $("#out"), models = S.meta.models, byId = {};
+  if (S.data && S.data !== "loading") S.data.results.forEach((r) => (byId[r.id] = r));
+  const real = models.filter((m) => m.status === "ready" || m.status === "not_loaded").length;
+  $("#countTxt").textContent = `${real} dari ${models.length} model sudah punya bobot hasil training · klik kartu untuk melihat 13 probabilitas`;
+
+  if (S.view === "rank" && S.data && S.data !== "loading") {
+    const rows = S.data.results.filter(isReal).sort((a, b) => b.top1.prob - a.top1.prob), truth = $("#truth").value;
+    out.innerHTML = `<div class="rank">${rows.map((r, i) => `<div class="rk" style="--c:${VCOL[r.version]}" data-id="${r.id}">
+      <span class="n">${String(i + 1).padStart(2, "0")}</span>
+      <div><b>${esc(r.arch_label)}</b><small>${esc(r.version_label)}</small></div>
+      <div class="p">${pretty(r.top1.label)} ${truth ? (r.top1.label === truth ? "✓" : "✗") : ""}</div>
+      <div class="bar"><i style="--w:${r.top1.prob * 100}%"></i></div>
+      <div class="t">${pct(r.top1.prob)}<br>${r.inference_ms} ms</div></div>`).join("") || `<div class="empty-chart">Belum ada model asli.</div>`}</div>`;
+  } else {
+    const V = S.meta.versions, A = S.meta.archs;
+    let h = `<div class="matrix"><div></div>`;
+    for (const [vid, v] of Object.entries(V)) h += `<div class="colhead" style="--c:${VCOL[vid]}"><b><i></i>${esc(v.label)}</b><p>${esc(v.desc)}</p></div>`;
+    for (const [aid, a] of Object.entries(A)) {
+      const any = models.find((m) => m.arch === aid && m.params_m);
+      h += `<div class="rowhead" style="--a:${ACOL[aid]}"><span class="sw"></span><b>${esc(a.label)}</b><small>${any ? any.params_m + " M parameter" : aid}</small></div>`;
+      for (const vid of Object.keys(V)) { const m = models.find((x) => x.arch === aid && x.version === vid); h += cardHTML(m, byId[m.id]); }
+    }
+    out.innerHTML = h + `</div>`;
+  }
+  requestAnimationFrame(() => $$(".bar>i", out).forEach((i) => (i.style.width = i.style.getPropertyValue("--w"))));
+  $$("[data-id]", out).forEach((el) => el.addEventListener("click", () => openDetail(el.dataset.id)));
+}
+
+function renderSummary() {
+  const d = S.data, s = d.summary;
+  if (!s) { $("#sumPanel").hidden = true; return; }
+  $("#sumPanel").hidden = false;
+  $("#ring").style.setProperty("--p", (s.agreement * 100).toFixed(0));
+  $("#ringPct").textContent = pct(s.agreement, 0);
+  $("#vname").textContent = pretty(s.consensus_label);
+  $("#vsub").textContent = `dipilih ${s.votes} dari ${s.total_models} model`;
+  const name = (id) => { const r = d.results.find((x) => x.id === id); return r ? short(r) : "–"; };
+  const ens = s.ensemble_top[0];
+  $("#kv").innerHTML = `<span>Ensemble (rata-rata)</span><span>${pretty(ens.label)} ${pct(ens.prob)}</span>
+    <span>Paling yakin</span><span>${name(s.most_confident)}</span><span>Tercepat</span><span>${name(s.fastest)}</span>
+    <span>Waktu total</span><span>${d.total_ms} ms</span><span>Ukuran gambar</span><span>${d.image_size.join("×")}</span>`;
+  const truth = $("#truth").value;
+  if (truth) {
+    const done = d.results.filter(isReal), ok = done.filter((r) => r.top1.label === truth).length;
+    $("#truthBox").innerHTML = `<div class="truth ${ok >= done.length / 2 ? "good" : "badc"}">${ok}/${done.length} model menebak benar (${pretty(truth)})</div>`;
+  } else $("#truthBox").innerHTML = "";
+}
+
+function renderProbChart() {
+  const rows = S.data.results.filter(isReal);
+  if (!rows.length) { $("#probChart").innerHTML = `<div class="empty-chart">Belum ada model asli yang bisa digambar.</div>`; return; }
+  const cls = S.meta.classes;
+  lineChart($("#probChart"), {
+    x: cls.map(pretty), xRotate: true, height: 300, yMin: 0, yMax: 100, yLabel: "Probabilitas (%)",
+    yFmt: (v) => v + "%", tipFmt: (v) => v.toFixed(1) + "%",
+    series: rows.map((r) => ({ name: short(r), color: ACOL[r.arch], dash: VDASH[r.version], dots: true, data: cls.map((c) => +(r.probs[c] * 100).toFixed(2)) })),
+  });
+}
+
+function openDetail(id) {
+  const r = S.data && S.data.results && S.data.results.find((x) => x.id === id);
+  if (!r || !r.probs) return;
+  const rows = Object.entries(r.probs).sort((a, b) => b[1] - a[1]), truth = $("#truth").value, c = VCOL[r.version];
+  $("#sheet").innerHTML = `<button class="x" onclick="closeModal()">Tutup</button><h3>${esc(r.arch_label)}</h3>
+    <div class="meta"><b style="color:${c}">${esc(r.version_label)}</b> · <span class="mono">${esc(r.id)}</span> · ${r.status === "demo" ? "prediksi demo" : r.inference_ms + " ms"}</div>
+    <div class="dist">${rows.map(([k, p], i) => `<div style="--c:${c}"><span class="${i === 0 ? "hit" : ""}">${pretty(k)}${k === truth ? " ★" : ""}</span><div class="bar"><i style="--w:${p * 100}%"></i></div><span>${pct(p, 2)}</span></div>`).join("")}</div>`;
+  $("#modal").classList.add("show");
+  requestAnimationFrame(() => $$("#sheet .bar>i").forEach((i) => (i.style.width = i.style.getPropertyValue("--w"))));
+}
+$("#rawBtn").addEventListener("click", () => {
+  $("#sheet").innerHTML = `<button class="x" onclick="closeModal()">Tutup</button><h3>Respons JSON</h3><div class="meta">Inilah data yang dikirim API. Halaman ini hanya “menggambar” data tersebut.</div><pre>${esc(JSON.stringify(S.data, null, 2))}</pre>`;
+  $("#modal").classList.add("show");
+});
+function closeModal() { $("#modal").classList.remove("show"); }
+$("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+$("#viewSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.v === "rank" && (!S.data || S.data === "loading")) return toast("Uji gambar dulu untuk melihat ranking.");
+  S.view = b.dataset.v; $$("#viewSeg button").forEach((x) => x.classList.toggle("on", x === b)); render();
+});
+
+/* =====================================================================
+   4) KURVA TRAINING  —  GET /api/curves
+   ===================================================================== */
+async function loadCurves(force) {
+  if (S.curves && !force) return;
+  let err = null;
+  try {
+    const res = await fetch(API_BASE + "/api/curves");
+    if (res.status === 404) throw new Error("old");
+    const j = await res.json();
+    if (!res.ok || !j.curves) throw new Error(j.detail || "HTTP " + res.status);
+    S.curves = j;
+  } catch (e) { err = e.message; S.curves = null; }
+  if (err) {
+    $("#curveChip").textContent = "kurva: gagal";
+    const msg = err === "old"
+      ? `<b>Server yang berjalan masih versi lama</b>, jadi data kurva belum bisa diambil (endpoint <code>/api/curves</code> belum ada).<br>
+         Di terminal VS Code tekan <b>Ctrl + C</b> untuk menghentikan server, jalankan lagi <code>.\\jalankan.ps1</code>, lalu tekan <b>F5</b> di halaman ini.`
+      : `Gagal membaca kurva training: <code>${esc(err)}</code><br>Lihat pesan error di terminal VS Code dan kirimkan ke Claude.`;
+    $("#picker").innerHTML = `<div class="err-box" style="grid-column:1/-1">${msg}</div>`;
+    $("#curveBody").innerHTML = "";
+    $("#cmpChart").innerHTML = `<div class="err-box">${msg}</div>`;
+    $("#mtable").innerHTML = "";
+    return;
+  }
+  const n = S.curves.available.length;
+  $("#curveChip").textContent = `kurva: ${n}/12 model`;
+  if (!S.sel || !S.curves.curves[S.sel]) S.sel = S.curves.available.find((k) => k.endsWith("v2_clean")) || S.curves.available[0] || null;
+  renderPicker(); renderCurve(); renderCompare();
+}
+
+function renderPicker() {
+  const V = S.curves.versions, A = S.curves.archs;
+  let h = `<div></div>` + Object.entries(V).map(([vid, v]) => `<div class="h" style="--c:${VCOL[vid]}"><i></i>${esc(v.label)}</div>`).join("");
+  for (const [aid, a] of Object.entries(A)) {
+    h += `<div class="rh">${esc(a.label)}</div>`;
+    for (const vid of Object.keys(V)) {
+      const id = `${aid}__${vid}`, c = S.curves.curves[id];
+      h += `<button class="pk${S.sel === id ? " on" : ""}" style="--c:${VCOL[vid]}" data-id="${id}" ${c ? "" : "disabled"}>
+        <span>${c ? c.epochs + " epoch" : "belum ada log"}</span><span class="tag">${c && c.test && c.test.accuracy != null ? c.test.accuracy.toFixed(1) + "%" : ""}</span></button>`;
+    }
+  }
+  $("#picker").innerHTML = h;
+  $$("#picker .pk").forEach((b) => b.addEventListener("click", () => { S.sel = b.dataset.id; renderPicker(); renderCurve(); }));
+}
+
+function renderCurve() {
+  const body = $("#curveBody"), c = S.sel && S.curves.curves[S.sel];
+  if (!c) {
+    body.innerHTML = `<div class="empty-chart" style="margin-top:20px">Belum ada log training yang terbaca.<br><br>Unduh notebook hasil training dari Google Drive (File → Unduh → .ipynb), lalu taruh di folder <code>kurva\\</code> dan muat ulang halaman ini.</div>`;
+    return;
+  }
+  const H = c.history, ep = H.train_loss.map((_, i) => String(i + 1)), b = c.best, bi = c.best_epoch - 1;
+  const vl = c.phase_boundaries.map((x) => ({ x, label: c.phases[x] }));
+  const gap = b.train_acc != null && b.val_acc != null ? b.train_acc - b.val_acc : null;
+  const lossGap = b.val_loss - b.train_loss;
+  const vColor = VCOL[c.version];
+  body.innerHTML = `
+    <div class="stats">
+      <div class="stat"><span>Model</span><b style="font-size:17px">${esc(c.arch_label)}</b><small style="color:${vColor};font-weight:600">${esc(c.version_label)}</small></div>
+      <div class="stat"><span>Jumlah epoch</span><b>${c.epochs}</b><small>${[...new Set(c.phases)].join(" → ")}</small></div>
+      <div class="stat"><span>Epoch terbaik</span><b>${c.best_epoch}</b><small>dipilih dari ${b.val_f1 != null ? "Val Macro-F1" : "Val Loss"}</small></div>
+      <div class="stat"><span>Val akurasi (terbaik)</span><b>${f1(b.val_acc)}%</b><small>train ${f1(b.train_acc)}%</small></div>
+      <div class="stat"><span>Test akurasi</span><b>${c.test && c.test.accuracy != null ? c.test.accuracy.toFixed(2) + "%" : "–"}</b><small>data uji</small></div>
+      <div class="stat"><span>Test Macro-F1</span><b>${c.test && c.test.macro_f1 != null ? c.test.macro_f1.toFixed(2) + "%" : "–"}</b><small>rata-rata 13 kelas</small></div>
+    </div>
+    <div class="charts3">
+      <div class="panel"><h4>Loss</h4><p class="s">Semakin turun semakin baik. Val loss naik saat train loss turun = tanda overfitting.</p><div id="cLoss"></div></div>
+      <div class="panel"><h4>Akurasi</h4><p class="s">Persentase gambar yang ditebak benar tiap epoch.</p><div id="cAcc"></div></div>
+      <div class="panel"><h4>${H.val_f1.some((v) => v != null) ? "Validation Macro-F1" : "Selisih Train − Val Akurasi"}</h4><p class="s">${H.val_f1.some((v) => v != null) ? "Rata-rata F1 13 kelas, adil untuk kelas yang datanya sedikit." : "Mendekati 0 = model tidak overfitting."}</p><div id="cF1"></div></div>
+    </div>
+    <div class="insight">${insight(c, gap, lossGap)}</div>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px">Sumber log: <span class="mono">kurva/${esc(c.source)}</span></p>`;
+  const mk = (arr) => [{ x: bi, y: arr[bi], color: P.best, label: "terbaik" }];
+  lineChart($("#cLoss"), { x: ep, xTitle: (i) => `Epoch ${i + 1} · ${c.phases[i]}`, xLabel: "Epoch", yLabel: "Loss", clamp0: true, vlines: vl,
+    series: [{ name: "Train loss", color: P.train, data: H.train_loss }, { name: "Val loss", color: P.val, data: H.val_loss }], marks: mk(H.val_loss) });
+  lineChart($("#cAcc"), { x: ep, xTitle: (i) => `Epoch ${i + 1} · ${c.phases[i]}`, xLabel: "Epoch", yLabel: "Akurasi (%)", yCap: 100, vlines: vl, tipFmt: (v) => v.toFixed(2) + "%",
+    series: [{ name: "Train akurasi", color: P.train, data: H.train_acc }, { name: "Val akurasi", color: P.val, data: H.val_acc }], marks: mk(H.val_acc) });
+  if (H.val_f1.some((v) => v != null))
+    lineChart($("#cF1"), { x: ep, xTitle: (i) => `Epoch ${i + 1} · ${c.phases[i]}`, xLabel: "Epoch", yLabel: "Macro-F1 (%)", yCap: 100, vlines: vl, tipFmt: (v) => v.toFixed(2) + "%",
+      series: [{ name: "Val Macro-F1", color: P.f1, data: H.val_f1 }], marks: mk(H.val_f1) });
+  else
+    lineChart($("#cF1"), { x: ep, xTitle: (i) => `Epoch ${i + 1}`, xLabel: "Epoch", yLabel: "Selisih (poin %)", vlines: vl, tipFmt: (v) => v.toFixed(2),
+      series: [{ name: "Train − Val akurasi", color: P.gap, data: H.train_acc.map((t, i) => +(t - H.val_acc[i]).toFixed(2)) }] });
+}
+
+function insight(c, gap, lossGap) {
+  const H = c.history, first = H.val_acc[0], last = H.val_acc[H.val_acc.length - 1];
+  const s = [];
+  s.push(`<b>${esc(c.arch_label)} (${esc(c.version_label)})</b> dilatih ${c.epochs} epoch; akurasi validasi naik dari <b>${f1(first)}%</b> di epoch 1 menjadi <b>${f1(c.best.val_acc)}%</b> di epoch terbaik (${c.best_epoch}).`);
+  if (gap != null) s.push(gap < 3 ? `Selisih akurasi train–val hanya <b>${gap.toFixed(1)} poin</b>, jadi model <b>tidak menunjukkan overfitting berarti</b>.` : gap < 8 ? `Selisih akurasi train–val <b>${gap.toFixed(1)} poin</b>: ada sedikit overfitting, masih wajar.` : `Selisih akurasi train–val <b>${gap.toFixed(1)} poin</b>: model cenderung <b>overfitting</b>.`);
+  const tail = H.val_loss.slice(-3), minL = Math.min(...H.val_loss);
+  if (tail.length === 3 && tail[2] > minL * 1.15) s.push(`Val loss di akhir training naik lagi dari titik terendahnya, sehingga memakai bobot epoch terbaik (bukan epoch terakhir) adalah keputusan yang tepat.`);
+  if (c.test && c.test.accuracy != null) s.push(`Pada data uji, model mencapai akurasi <b>${c.test.accuracy.toFixed(2)}%</b>${c.test.macro_f1 != null ? ` dengan Macro-F1 <b>${c.test.macro_f1.toFixed(2)}%</b>` : ""}.`);
+  if (c.phase_boundaries.length) s.push(`Garis merah putus-putus menandai pergantian tahap training (${[...new Set(c.phases)].join(" → ")}); lonjakan kurva di titik itu normal karena backbone mulai ikut dilatih.`);
+  return s.join(" ");
+}
+
+/* =====================================================================
+   5) PERBANDINGAN SEMUA MODEL
+   ===================================================================== */
+$("#metricSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.metric = b.dataset.m; $$("#metricSeg button").forEach((x) => x.classList.toggle("on", x === b)); renderCompare();
+});
+function renderCompare() {
+  if (!S.curves) return;
+  const V = S.curves.versions;
+  $("#verFilter").innerHTML = Object.entries(V).map(([vid, v]) => `<button class="${S.vf.has(vid) ? "on" : ""}" style="--c:${VCOL[vid]}" data-v="${vid}"><i></i>${esc(v.label)}</button>`).join("");
+  $$("#verFilter button").forEach((b) => b.addEventListener("click", () => { S.vf.has(b.dataset.v) ? S.vf.delete(b.dataset.v) : S.vf.add(b.dataset.v); renderCompare(); }));
+
+  const list = Object.values(S.curves.curves).filter((c) => S.vf.has(c.version));
+  const withData = list.filter((c) => c.history[S.metric].some((v) => v != null));
+  const isPct = S.metric !== "val_loss" && S.metric !== "train_loss";
+  if (!withData.length) {
+    $("#cmpChart").innerHTML = `<div class="empty-chart">Tidak ada data untuk metrik ini pada versi yang dipilih.${S.metric === "val_f1" ? "<br>(Notebook Dataset Awal ConvNeXt/EfficientNet/VGG16 tidak mencatat F1 per epoch.)" : ""}</div>`;
+  } else {
+    const n = Math.max(...withData.map((c) => c.epochs));
+    lineChart($("#cmpChart"), {
+      x: Array.from({ length: n }, (_, i) => String(i + 1)), xTitle: (i) => `Epoch ${i + 1}`, xLabel: "Epoch", height: 380,
+      yLabel: isPct ? "Persen (%)" : "Loss", yCap: isPct ? 100 : null, clamp0: true, tipFmt: (v) => (isPct ? v.toFixed(2) + "%" : v.toFixed(4)),
+      series: withData.sort((a, b) => a.version.localeCompare(b.version) || a.arch.localeCompare(b.arch))
+        .map((c) => ({ name: `${c.arch_label.replace(" + CBAM", "")} · ${c.version_label}`, color: ACOL[c.arch], dash: VDASH[c.version], data: c.history[S.metric] })),
+    });
+  }
+  renderTable();
+}
+function renderTable() {
+  const meta = S.meta ? Object.fromEntries(S.meta.models.map((m) => [m.id, m])) : {};
+  const rows = [];
+  for (const aid of Object.keys(S.curves.archs)) for (const vid of Object.keys(S.curves.versions)) {
+    const id = `${aid}__${vid}`, c = S.curves.curves[id], m = meta[id];
+    if (!S.vf.has(vid)) continue;
+    rows.push({ id, arch: S.curves.archs[aid].label, aid, vid, ver: S.curves.versions[vid].label,
+      epochs: c ? c.epochs : null, best_val: c ? c.best.val_acc : null, test_acc: c && c.test ? c.test.accuracy : null,
+      test_f1: c && c.test ? c.test.macro_f1 : null, params: m ? m.params_m : null,
+      weight: m ? m.status === "ready" || m.status === "not_loaded" : false });
+  }
+  const [k, dir] = S.sort;
+  rows.sort((a, b) => (a[k] == null) - (b[k] == null) || (typeof a[k] === "string" ? a[k].localeCompare(b[k]) : (a[k] - b[k])) * dir);
+  const maxT = Math.max(...rows.map((r) => r.test_acc ?? -1)), maxF = Math.max(...rows.map((r) => r.test_f1 ?? -1));
+  const cols = [["arch", "Arsitektur"], ["ver", "Versi"], ["epochs", "Epoch", 1], ["best_val", "Val Akurasi", 1], ["test_acc", "Test Akurasi", 1], ["test_f1", "Test Macro-F1", 1], ["params", "Parameter (M)", 1], ["weight", "Bobot di API"]];
+  $("#mtable").innerHTML = `<thead><tr>${cols.map(([key, lab, num]) => `<th class="${num ? "num" : ""}" data-k="${key}">${lab}${S.sort[0] === key ? (S.sort[1] > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map((r) => `<tr><td><span class="vpill" style="--c:${ACOL[r.aid]}"><i></i>${esc(r.arch)}</span></td>
+      <td><span class="vpill" style="--c:${VCOL[r.vid]}"><i></i>${esc(r.ver)}</span></td>
+      <td class="num">${r.epochs ?? "–"}</td><td class="num">${r.best_val != null ? r.best_val.toFixed(2) + "%" : "–"}</td>
+      <td class="num ${r.test_acc === maxT ? "hi" : ""}">${r.test_acc != null ? r.test_acc.toFixed(2) + "%" : "–"}</td>
+      <td class="num ${r.test_f1 === maxF ? "hi" : ""}">${r.test_f1 != null ? r.test_f1.toFixed(2) + "%" : "–"}</td>
+      <td class="num">${r.params ?? "–"}</td><td>${r.weight ? `<span class="pill y">ada</span>` : `<span class="pill n">belum</span>`}</td></tr>`).join("")}</tbody>`;
+  $$("#mtable th").forEach((th) => th.addEventListener("click", () => { const key = th.dataset.k; S.sort = [key, S.sort[0] === key ? -S.sort[1] : -1]; renderTable(); }));
+}
+
+/* ---------- Tema ---------- */
+$("#themeBtn").addEventListener("click", () => {
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+  render();
+  if (S.data && S.data !== "loading") renderProbChart();
+  if (S.curves) { renderPicker(); renderCurve(); renderCompare(); }
+});
+
+/* ---------- Mulai ---------- */
+applyTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+loadMeta();
+loadCurves();
+const startTab = location.hash.slice(1);
+if (["kurva", "banding"].includes(startTab)) $(`#tabs button[data-t="${startTab}"]`).click();
+</script>
+</body>
+</html>
