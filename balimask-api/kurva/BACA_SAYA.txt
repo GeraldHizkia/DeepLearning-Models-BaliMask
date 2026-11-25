@@ -1,0 +1,19 @@
+FOLDER KURVA TRAINING
+=====================
+Grafik garis (loss & akurasi per epoch) di tab "Kurva Training" dibaca dari
+file notebook .ipynb yang SUDAH DIJALANKAN (ada output-nya).
+
+Cara menambah kurva model yang kamu latih di Colab:
+  1. Buka Google Drive > folder "Colab Notebooks".
+  2. Klik kanan notebook yang sudah selesai training (misal
+     01_ConvNeXt_Tiny_Canonical.ipynb) > Download.
+  3. Taruh file .ipynb itu di folder ini (kurva\), nama file jangan diubah.
+  4. Refresh halaman http://127.0.0.1:8000 (server tidak perlu direstart).
+
+Nama file menentukan modelnya:
+  ...Canonical...     -> Dataset Clean (v2)
+  ...Ultra_Robust...  -> Training Padat (v3)
+  lainnya             -> Dataset Awal (v1)
+
+Folder bawaan\ berisi log training Dataset Awal dari hasil run teman (ikut di repo).
+File yang kamu taruh langsung di kurva\ akan menggantikan yang di bawaan\.
